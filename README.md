@@ -1,4 +1,4 @@
-# brasileirao-api
+# imofind-api
 Desenvolvimento de um Bot automatizado de raspagem de dados web, capturando informações sobre partidas na página principal do Google, tratando e armazenando os dados no bando de dados H2 e disponibilizando as informações da partida em tempo real em uma API REST
 
 <h2>Projeto de raspagem web, desenvolvido com a utilização de conceitos e técnicas de Web Scraping</h2>
@@ -22,7 +22,7 @@ São necessários os seguintes pré-requisitos para a execução do projeto:
 
 * Java 11 ou versões superiores.
 * Maven 3.6.3 ou versões superiores.
-* STS, Intellj IDEA Community Edition ou sua IDE favorita.
+* Intellj IDEA Community Edition ou sua IDE favorita.
 * Controle de versão GIT.
 
 
