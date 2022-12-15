@@ -38,4 +38,7 @@ public class Imovel implements Serializable {
 
     @Column(name = "price_varchar")
     private String price_varchar;
+
+    @Column(name = "link")
+    private String link;
 }

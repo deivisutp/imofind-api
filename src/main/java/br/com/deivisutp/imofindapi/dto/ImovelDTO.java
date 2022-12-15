@@ -21,6 +21,17 @@ public class ImovelDTO implements Serializable {
 
     private String origem;
 
+    private String link;
+
+    public ImovelDTO(String titulo, String extra, Float price, String origem, String price_varchar, String link) {
+        this.titulo = titulo;
+        this.extra = extra;
+        this.price = price;
+        this.origem = origem;
+        this.price_varchar = price_varchar;
+        this.link = link;
+    }
+
     public ImovelDTO(String titulo, String extra, Float price, String origem, String price_varchar) {
         this.titulo = titulo;
         this.extra = extra;

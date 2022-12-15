@@ -49,7 +49,7 @@ public class PartidaTask {
     private void startScheduling(String day) {
         this.saveLogInfo(String.format("%s: %s", day, DataUtil.formataDateEmString(new Date(), DD_MM_YYYY_HH_MM_SS)));
 
-        scrappingService.verificaImoveisPeriodo();
+        //scrappingService.verificaImoveisPeriodo();
     }
 
     private void saveLogInfo(String msg) {

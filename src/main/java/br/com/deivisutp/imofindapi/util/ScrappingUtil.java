@@ -47,6 +47,8 @@ public class ScrappingUtil {
     private static final String ZAP_TITULO = "span[class=simple-card__text text-regular]";
     private static final String LISTA_ZAP_DETAIL_SC = "div[class=card-container js-listing-card]";
     private static final String LISTA_ZAP ="div[class=listings__container]";
+    private static final String LINK_ZAP = "div[class=oz-card-image__slide]";
+    private static final String LINK_ZAP2 = "https://www.zapimoveis.com.br/imovel";
     private static final String ZAP_URL="https://www.zapimoveis.com.br/venda/apartamentos/sc+blumenau++victor-konder/?onde=,Santa%20Catarina,Blumenau,,Victor%20Konder,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EVictor%20Konder,-26.90796,-49.07378,%3B,Santa%20Catarina,Blumenau,,Itoupava%20Seca,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EItoupava%20Seca,-26.889541,-49.087003,%3B,Santa%20Catarina,Blumenau,,Vila%20Nova,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EVila%20Nova,-26.902774,-49.089311,%3B,Santa%20Catarina,Blumenau,,Velha,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EVelha,-26.924159,-49.102428,%3B,Santa%20Catarina,Blumenau,,Itoupava%20Norte,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EItoupava%20Norte,-26.883239,-49.074135,&transacao=Venda&tipo=Im%C3%B3vel%20usado&tipoUnidade=Residencial,&precoMaximo=250000&ordem=Menor%20pre%C3%A7o";
     private static final String PAGE_ZAP= "&pagina=";
 
@@ -64,6 +66,16 @@ public class ScrappingUtil {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public String convertLink(String url) {
+        try {
+            int index = url.lastIndexOf('/');
+            String lastWord = url.substring(index, url.length()).replace(".jpg","");
+            return lastWord;
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public List<ImovelDTO> obterInfoImoveis(String url) {
@@ -122,11 +134,14 @@ public class ScrappingUtil {
 
                 imoveis = document.select(LISTA_ZAP).select(LISTA_ZAP_DETAIL_SC);
                 for (Element e : imoveis) {
+                    String link = convertLink(e.select(LINK_ZAP).select("img").attr("src"));
+                    link = LINK_ZAP2.concat(link.concat("-id-")).concat(e.attr("data-id"));
                     listImoveis.add( new ImovelDTO( e.select(ZAP_TITULO).text().concat(e.select(ZAP_EXTRA2).text()),
                             e.select(ZAP_EXTRA).text().concat(" - " + e.select(ZAP_COND).text()),
                             convertStringToFloat(e.select(ZAP_PRICE).text()),
                             "ZAP-IMOVEIS",
-                            e.select(ZAP_PRICE).text()));
+                            e.select(ZAP_PRICE).text(),
+                            link));
 
                 }
             }
