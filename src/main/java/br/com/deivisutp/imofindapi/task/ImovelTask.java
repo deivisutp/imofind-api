@@ -13,43 +13,51 @@ import java.util.Date;
 
 @Configuration
 @EnableScheduling
-public class PartidaTask {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PartidaTask.class);
+public class ImovelTask {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImovelTask.class);
     private static final String TIME_ZONE = "America/Sao_Paulo";
     private static final String DD_MM_YYYY_HH_MM_SS = "dd/MM/yyyy HH:mm:ss";
 
     @Autowired
     private ScrappingService scrappingService;
 
+    /*
     @Scheduled(cron = "0/30 * 19-23 * * WED", zone = TIME_ZONE)
-    public void taskPartidaWednesday() {
+    public void taskImovelWednesday() {
         startScheduling("taskPartidaWednesday()");
     }
 
     @Scheduled(cron = "0/30 * 19-23 * * THU", zone = TIME_ZONE)
-    public void taskPartidaThursday() {
+    public void taskImovelThursday() {
         startScheduling("taskPartidaThursday()");
     }
 
     @Scheduled(cron = "0/30 * 16-23 * * SAT", zone = TIME_ZONE)
-    public void taskPartidaSaturday() {
+    public void taskImovelSaturday() {
         startScheduling("taskPartidaSaturday()");
     }
 
     @Scheduled(cron = "0/30 * 16-23 * * SUN", zone = TIME_ZONE)
-    public void taskPartidaSundayAfternoon() {
+    public void taskImovelSundayAfternoon() {
         startScheduling("taskPartidaSundayAfternoon()");
     }
 
     @Scheduled(cron = "0/30 * 11-13 * * SUN", zone = TIME_ZONE)
-    public void taskPartidaSundayMorning() {
+    public void taskImovelSundayMorning() {
         startScheduling("taskPartidaSundayMorning()");
+    }
+
+     */
+
+    @Scheduled(cron = "0 0 6,22 * * *", zone = TIME_ZONE)
+    public void taskImovel() {
+        startScheduling("taskImovel()");
     }
 
     private void startScheduling(String day) {
         this.saveLogInfo(String.format("%s: %s", day, DataUtil.formataDateEmString(new Date(), DD_MM_YYYY_HH_MM_SS)));
 
-        //scrappingService.verificaImoveisPeriodo();
+        scrappingService.verificaImoveisPeriodo();
     }
 
     private void saveLogInfo(String msg) {

@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'br.com.deivisutp.brasileirao-api' is invalid and this project uses 'br.com.deivisutp.brasileiraoapi' instead.
+* The original package name 'br.com.deivisutp.brasileirao-api' is invalid and this project uses 'br.com.deivisutp.imofindapi' instead.
 
 # Getting Started
 

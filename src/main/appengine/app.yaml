@@ -1,0 +1,4 @@
+runtime: java11
+env: standard
+# remember to use an instance class compatible with your scaling type
+instance_class: F1

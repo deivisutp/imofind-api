@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.deivisutp</groupId>
-	<artifactId>brasileirao-api</artifactId>
+	<artifactId>imofind-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>brasileirao-api</name>
-	<description>Bot para web scrapping jogos do brasileirão</description>
+	<name>imo-find</name>
+	<description>Bot para web scrapping de imóveis</description>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -76,6 +76,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -92,7 +98,15 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>2.2.0</version>
+				<configuration>
+					<version>1</version>
+					<projectId>boxwood-spot-302823</projectId>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>
