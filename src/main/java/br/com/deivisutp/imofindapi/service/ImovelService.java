@@ -37,9 +37,11 @@ public class ImovelService {
         return imoveis;
     }
 
-    public void save(List<ImovelDTO> lista) {
+    public void delete() {
         imovelRepository.deleteAll();
+    }
 
+    public void save(List<ImovelDTO> lista) {
         List<Imovel> imoveis = lista
                 .stream()
                 .map(imovel -> modelMapper.map(imovel, Imovel.class))

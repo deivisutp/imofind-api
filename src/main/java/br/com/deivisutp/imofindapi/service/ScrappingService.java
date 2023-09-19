@@ -19,14 +19,15 @@ public class ScrappingService {
 
 
     public List<ImovelDTO> buscarImoveis() {
+        imovelService.delete();
         List<ImovelDTO> lista = scrappingUtil.obterInfoImoveis("");
 
         return lista;
     }
 
     public void verificaImoveisPeriodo() {
+        imovelService.delete();
         List<ImovelDTO> lista = scrappingUtil.obterInfoImoveis("");
-
         imovelService.save(lista);
     }
 }

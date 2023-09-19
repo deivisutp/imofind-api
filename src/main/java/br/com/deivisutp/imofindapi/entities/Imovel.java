@@ -24,10 +24,10 @@ public class Imovel implements Serializable {
     @Column(name = "imovel_id")
     private Long id;
 
-    @Column(name = "titulo")
+    @Column(name = "titulo", length = 4000)
     private String titulo;
 
-    @Column(name = "extra")
+    @Column(name = "extra", length = 4000)
     private String extra;
 
     @Column(name = "price")
@@ -36,9 +36,12 @@ public class Imovel implements Serializable {
     @Column(name = "origem")
     private String origem;
 
-    @Column(name = "price_varchar")
+    @Column(name = "price_varchar", length = 4000)
     private String price_varchar;
 
-    @Column(name = "link")
+    @Column(name = "link", length = 4000)
     private String link;
+
+    @Column(name = "image", length = 4000)
+    private String image;
 }

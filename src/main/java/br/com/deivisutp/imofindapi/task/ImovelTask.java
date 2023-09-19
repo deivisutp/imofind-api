@@ -49,10 +49,10 @@ public class ImovelTask {
 
      */
 
-    @Scheduled(cron = "0 0 6,22 * * *", zone = TIME_ZONE)
-    public void taskImovel() {
-        startScheduling("taskImovel()");
-    }
+  //  @Scheduled(cron = "0 0 6,22 * * *", zone = TIME_ZONE)
+   // public void taskImovel() {
+      //  startScheduling("taskImovel()");
+   // }
 
     private void startScheduling(String day) {
         this.saveLogInfo(String.format("%s: %s", day, DataUtil.formataDateEmString(new Date(), DD_MM_YYYY_HH_MM_SS)));
