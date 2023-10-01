@@ -43,7 +43,7 @@ public class ScrappingUtil {
     private static final String ACRC_EXTRA = "div[class=detalhes]";
     private static final String ACRC_PRICE = "div[class=valor]";
 
-    private static final String ACRC_URL="https://www.acrcimoveis.com.br/comprar/sc/blumenau_indaial_timbo/apartamento_casa/valor-0_250000/ordem-valor/resultado-crescente/";
+    private static final String ACRC_URL="https://www.acrcimoveis.com.br/comprar/sc/blumenau_indaial_timbo/apartamento_casa/valor-0_500000/ordem-valor/resultado-crescente/";
     private static final String PAGE_ACRC= "pagina-1/";
 
     //ZAP imoveis

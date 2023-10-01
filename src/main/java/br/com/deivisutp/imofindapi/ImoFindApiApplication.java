@@ -2,9 +2,10 @@ package br.com.deivisutp.imofindapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class ImoFindApiApplication {
+public class ImoFindApiApplication  extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ImoFindApiApplication.class, args);
