@@ -6,6 +6,7 @@ import br.com.deivisutp.imofindapi.entities.Imovel;
 import br.com.deivisutp.imofindapi.exception.StandardError;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
 import br.com.deivisutp.imofindapi.service.ImovelService;
+import br.com.deivisutp.imofindapi.service.ScrappingImoFindService;
 import br.com.deivisutp.imofindapi.service.ScrappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +35,9 @@ public class ImovelController {
     @Autowired
     private ScrappingService scrappingService;
 
+    @Autowired
+    private ScrappingImoFindService scrappingImoFindService;
+
     @ApiOperation(value = "Buscar imóveis")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ImovelResponseDTO.class),
@@ -58,5 +62,11 @@ public class ImovelController {
         ImovelFilter search = new ImovelFilter();
         return new ResponseEntity<>(imovelService.serachImoveis(search, descricao, paging),
                 HttpStatus.OK);
+    }
+
+    @PostMapping("/scrapingRealState")
+    public ResponseEntity<String> varrerImoveis() {
+        scrappingImoFindService.executeScrappingService();
+        return ResponseEntity.ok().body("ok");
     }
 }

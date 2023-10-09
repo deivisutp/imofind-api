@@ -2,7 +2,6 @@ package br.com.deivisutp.imofindapi.util;
 
 import br.com.deivisutp.imofindapi.dto.ImovelDTO;
 import br.com.deivisutp.imofindapi.service.ImovelService;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,7 +16,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,7 +62,7 @@ public class ScrappingUtil {
     private static final String BASE_URL_GOOGLE = "https://www.google.com.br/search?q=";
     private static final String COMPLEMENTO_URL_GOOGLE = "&hl=pt-BR";
 
-    public float convertStringToFloat(String givenString) {
+    public static float convertStringToFloat(String givenString) {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
 
         try {
