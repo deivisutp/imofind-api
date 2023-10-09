@@ -36,6 +36,20 @@ public class ACRCScrapping implements IScrapping {
     private static final String PAGE_ACRC = "pagina-";
     private static final String ACRC_WEBSITE = "https://www.acrcimoveis.com.br";
     private static final String ACRC_TEXTO = "div[id=ctrl_sticky]";
+
+    public String getTexto(String texto) {
+        try {
+            if (texto.length() > 255)
+                return texto.substring(0, 255);
+
+            return texto;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return texto;
+    }
+
     @Override
     public void varrerImoveis() {
         Document document = null;
@@ -59,7 +73,7 @@ public class ACRCScrapping implements IScrapping {
                     String extra = doc.select(ACRC_TEXTO).select("div[class=texto]").first().text();
                     listImoveis.add(new ImovelDTO(
                             e.select(ACRC_TITULO).text(),
-                            extra.substring(0, 250),
+                            getTexto(extra),
                             ScrappingUtil.convertStringToFloat(e.select("div[class=valor]").select("h5").text()),
                             "ACRC",
                             e.select("div[class=valor]").select("h5").text(),
