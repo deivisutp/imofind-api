@@ -9,4 +9,8 @@ public class DataUtil {
         DateFormat formatter = new SimpleDateFormat(mask);
         return formatter.format(data);
     }
+
+    public static String getDataString(String fromDto, String fromEntity) {
+        return fromDto != null && !fromDto.isEmpty() ? fromDto : fromEntity;
+    }
 }

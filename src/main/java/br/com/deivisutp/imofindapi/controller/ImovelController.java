@@ -1,6 +1,7 @@
 package br.com.deivisutp.imofindapi.controller;
 
 import br.com.deivisutp.imofindapi.dto.ImovelDTO;
+import br.com.deivisutp.imofindapi.dto.ImovelFilterDTO;
 import br.com.deivisutp.imofindapi.dto.ImovelResponseDTO;
 import br.com.deivisutp.imofindapi.entities.Imovel;
 import br.com.deivisutp.imofindapi.exception.StandardError;
@@ -19,10 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
-
-
 
 @RestController
 @RequestMapping("/api/v1/imoveis")
@@ -64,9 +63,24 @@ public class ImovelController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/buscar")
+    public ResponseEntity<ImovelResponseDTO> get(ImovelFilterDTO filter) {
+        Long totalElements = imovelService.count(filter);
+        List<Imovel> result = imovelService.getImoveis(filter, totalElements);
+
+        ImovelResponseDTO response = new ImovelResponseDTO(result);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/scrapingRealState")
     public ResponseEntity<String> varrerImoveis() {
         scrappingImoFindService.executeScrappingService();
         return ResponseEntity.ok().body("ok");
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity update( @Valid @RequestBody ImovelDTO imovel) {
+        imovelService.save(imovel);
+        return ResponseEntity.noContent().build();
     }
 }

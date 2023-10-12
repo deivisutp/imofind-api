@@ -44,4 +44,13 @@ public class Imovel implements Serializable {
 
     @Column(name = "image", length = 4000)
     private String image;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "neighborhood")
+    private String neighborhood;
+
+    @Column(name = "type")
+    private String type;
 }

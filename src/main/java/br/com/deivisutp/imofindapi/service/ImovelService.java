@@ -1,22 +1,23 @@
 package br.com.deivisutp.imofindapi.service;
 
 import br.com.deivisutp.imofindapi.dto.ImovelDTO;
+import br.com.deivisutp.imofindapi.dto.ImovelFilterDTO;
 import br.com.deivisutp.imofindapi.entities.Imovel;
 import br.com.deivisutp.imofindapi.exception.NotFoundException;
 import br.com.deivisutp.imofindapi.repository.ImovelRepository;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
+import br.com.deivisutp.imofindapi.repository.implementation.ImovelRepositoryImpl;
+import br.com.deivisutp.imofindapi.util.DataUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ public class ImovelService {
 
     @Autowired
     private ImovelRepository imovelRepository;
+
+    @Autowired
+    private ImovelRepositoryImpl imovelRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -129,5 +133,30 @@ public class ImovelService {
                 .collect(Collectors.toList());
 
         imovelRepository.saveAll(imoveis);
+    }
+
+    public void save(ImovelDTO imovelDTO) {
+        Imovel imovel = imovelRepository.findById(imovelDTO.getId()).orElseThrow(() -> new RuntimeException("Imóvel não encontrado."));
+
+        imovel.setTitulo(DataUtil.getDataString(imovelDTO.getTitulo(), imovel.getTitulo()));
+        imovel.setImage(DataUtil.getDataString(imovelDTO.getImage(), imovel.getImage()));
+        imovel.setExtra(DataUtil.getDataString(imovelDTO.getExtra(), imovel.getExtra()));
+        imovel.setCity(DataUtil.getDataString(imovelDTO.getCity(), imovel.getCity()));
+        imovel.setLink(DataUtil.getDataString(imovelDTO.getLink(), imovel.getLink()));
+        imovel.setNeighborhood(DataUtil.getDataString(imovelDTO.getNeighborhood(), imovel.getNeighborhood()));
+        imovel.setOrigem(DataUtil.getDataString(imovelDTO.getOrigem(), imovel.getOrigem()));
+        imovel.setType(DataUtil.getDataString(imovelDTO.getType(), imovel.getType()));
+        imovel.setPrice_varchar(DataUtil.getDataString(imovelDTO.getPrice_varchar(), imovel.getPrice_varchar()));
+        imovel.setPrice(imovelDTO.getPrice() != null ? imovelDTO.getPrice() : imovel.getPrice());
+
+        imovelRepo.save(imovel);
+    }
+
+    public Long count(ImovelFilterDTO filter) {
+       return imovelRepo.count(filter);
+    }
+
+    public List<Imovel> getImoveis(ImovelFilterDTO filter, Long totalElements) {
+        return imovelRepo.findAll(filter, totalElements);
     }
 }
