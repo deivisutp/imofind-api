@@ -37,15 +37,7 @@ public class ImovelController {
     @Autowired
     private ScrappingImoFindService scrappingImoFindService;
 
-    @ApiOperation(value = "Buscar imóveis")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ImovelResponseDTO.class),
-            @ApiResponse(code = 400, message = "Bad request", response = StandardError.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = StandardError.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = StandardError.class),
-            @ApiResponse(code = 404, message = "Not found", response = StandardError.class),
-            @ApiResponse(code = 500, message = "Internal server error", response = StandardError.class)
-    })
+    @Deprecated
     @GetMapping("/buscarImoveis")
     public ResponseEntity<List<ImovelDTO>> buscarImoveis() {
         List<ImovelDTO> lista = scrappingService.buscarImoveis();
@@ -53,6 +45,7 @@ public class ImovelController {
         return ResponseEntity.ok().body(lista);
     }
 
+    @Deprecated
     @GetMapping("/busca")
     public ResponseEntity<Page<Imovel>> getImoveis(@RequestParam(required = false) String descricao,
                                    @RequestParam(defaultValue = "0") int page,
@@ -63,6 +56,15 @@ public class ImovelController {
                 HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Buscar imóveis")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ImovelResponseDTO.class),
+            @ApiResponse(code = 400, message = "Bad request", response = StandardError.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = StandardError.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = StandardError.class),
+            @ApiResponse(code = 404, message = "Not found", response = StandardError.class),
+            @ApiResponse(code = 500, message = "Internal server error", response = StandardError.class)
+    })
     @GetMapping("/buscar")
     public ResponseEntity<ImovelResponseDTO> get(ImovelFilterDTO filter) {
         Long totalElements = imovelService.count(filter);

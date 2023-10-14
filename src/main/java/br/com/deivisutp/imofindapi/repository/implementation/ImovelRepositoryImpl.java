@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Repository
 public class ImovelRepositoryImpl {
@@ -65,7 +66,7 @@ public class ImovelRepositoryImpl {
         }
 
         if (filter.getCity() != null) {
-            predicates.add(criteriaBuilder.like(root.get("city"), "%" + filter.getCity() + "%"));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("city")), "%" + filter.getCity().toLowerCase(Locale.ROOT) + "%"));
         }
 
         if (filter.getInitialPrice() != null) {
@@ -78,11 +79,11 @@ public class ImovelRepositoryImpl {
         }
 
         if (filter.getTitulo() != null) {
-            predicates.add(criteriaBuilder.like(root.get("titulo"),"%" + filter.getTitulo() + "%"));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("titulo")),"%" + filter.getTitulo().toLowerCase(Locale.ROOT) + "%"));
         }
 
         if (filter.getExtra() != null) {
-            predicates.add(criteriaBuilder.like(root.get("extra"), "%" +filter.getExtra() + "%"));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("extra")), "%" +filter.getExtra().toLowerCase(Locale.ROOT) + "%"));
         }
 
         if (filter.getOrigem() != null) {
@@ -90,7 +91,7 @@ public class ImovelRepositoryImpl {
         }
 
         if (filter.getNeighborhood() != null) {
-            predicates.add(criteriaBuilder.like(root.get("neighborhood"), "%" + filter.getNeighborhood() + "%"));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("neighborhood")), "%" + filter.getNeighborhood().toLowerCase(Locale.ROOT) + "%"));
         }
 
         if (filter.getType() != null) {

@@ -34,6 +34,26 @@ public class ZapImoveisScrapping implements IScrapping {
     private static final String ZAP_URL2 ="https://www.zapimoveis.com.br/venda/apartamentos/sc+blumenau++victor-konder/?__ab=exp-aa-test:B,new-discover-zap:alert,vas-officialstore-social:enabled,deduplication:select&transacao=venda&onde=,Santa%20Catarina,Blumenau,,Victor%20Konder,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EVictor%20Konder,-26.90796,-49.07378,;,Santa%20Catarina,Blumenau,,Itoupava%20Seca,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EItoupava%20Seca,-26.889541,-49.087003,;,Santa%20Catarina,Blumenau,,Vila%20Nova,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EVila%20Nova,-26.902774,-49.089311,;,Santa%20Catarina,Blumenau,,Velha,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EVelha,-26.924159,-49.102428,;,Santa%20Catarina,Blumenau,,Itoupava%20Norte,,,neighborhood,BR%3ESanta%20Catarina%3ENULL%3EBlumenau%3EBarrios%3EItoupava%20Norte,-26.883239,-49.074135,&tipos=apartamento_residencial&precoMaximo=500000&ordem=Menor%20pre%C3%A7o";
     private static final String PAGE_ZAP= "&pagina=";
 
+    private static String getDataExtrafromForm(final String text, int type) {
+        try {
+            if (text == null || text.isEmpty())
+                return text;
+
+            if (text.indexOf(",") <= 0)
+                return text;
+
+            String cidade = text.substring(text.indexOf(",")+2, text.length());
+            String bairro = text.substring(0, text.indexOf(","));
+
+            return type == 0 ? cidade : bairro;
+        } catch (Exception e ) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+        }
+
+        return text;
+    }
+
     @Override
     public void varrerImoveis() {
         Document document = null;
@@ -61,7 +81,10 @@ public class ZapImoveisScrapping implements IScrapping {
                             "ZAP-IMOVEIS",
                             e.select("div[class=listing-price]").first().text(),
                             e.select("a").attr("href"),
-                            e.select("div[class=l-carousel-image__container]").select("ul[class=l-carousel-image__list]").select("li > img").first().attr("src")
+                            e.select("div[class=l-carousel-image__container]").select("ul[class=l-carousel-image__list]").select("li > img").first().attr("src"),
+                            getDataExtrafromForm(e.select("div[data-cy=card__address]").select("h2").attr("title"),0),
+                            getDataExtrafromForm(e.select("div[data-cy=card__address]").select("h2").attr("title"),1),
+                            "Apartamento"
                     ));
                 }
             }

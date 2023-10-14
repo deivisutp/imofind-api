@@ -59,25 +59,6 @@ public class ImovelService {
     }
 
     public Page<Imovel> serachImoveis(ImovelFilter filter, String descricao, Pageable pageable) {
-        /*constructBuilder();
-        CriteriaQuery<Imovel> criteria = builder.createQuery(Imovel.class);
-        Root<Imovel> imovel = criteria.from(Imovel.class);
-
-        criteria.select(builder.construct(Imovel.class));
-
-        Predicate[] where = criarRestricoes(filter, imovel);
-
-        Sort sort = pageable.getSort();
-        if (sort != null && !sort.isEmpty()) {
-            Sort.Order order = sort.iterator().next();
-            String property = order.getProperty();
-            criteria.orderBy(order.isAscending() ? builder.asc(imovel.get(property))
-                    : builder.desc(imovel.get(property)));
-        }
-
-        criteria.where(where);
-        TypedQuery<Imovel> query = em.createQuery(criteria); */
-
         if (descricao != null && !descricao.isEmpty())
             return new PageImpl<>(imovelRepository.searchImoveisLikeTitulo(descricao), pageable, total(filter));
 

@@ -46,6 +46,31 @@ public class ImoveisSCScrapping implements IScrapping {
                 .collect(Collectors.toList());
     }
 
+    private static String getDataExtrafromForm(final String text, int type) {
+        try {
+            if (text == null || text.isEmpty())
+                return text;
+
+            if (text.indexOf(",") <= 0)
+                return text;
+
+            String cidade = text.substring(0, text.indexOf(","));
+            String bairro;
+
+            if (text.indexOf("Cód.:") <= 0)
+                bairro = text.substring(text.indexOf(",")+2, text.length());
+            else
+                bairro = text.substring(text.indexOf(",")+2, text.indexOf("Cód.:")-1);
+
+            return type == 0 ? cidade : bairro;
+        } catch (Exception e ) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+        }
+
+        return text;
+    }
+
     @Override
     public void varrerImoveis() {
         System.out.println(IMOVEIS_SC);
@@ -76,7 +101,11 @@ public class ImoveisSCScrapping implements IScrapping {
                             "IMOVEIS-SC",
                             e.select(IMOVEIS_SC_PRICE).text(),
                             e.select("div[class=imovel-actions]").select("a").first().attr("href"),
-                            e.select("img").first().attr("src")));
+                            e.select("img").first().attr("src"),
+                            getDataExtrafromForm(e.select(IMOVEIS_SC_EXTRA).text(),0),
+                            getDataExtrafromForm(e.select(IMOVEIS_SC_EXTRA).text(),1),
+                            e.select("h2[class=imovel-titulo]").select("meta[itemprop=model]").attr("content")
+                            ));
                 }
             }
             imovelService.save(listImoveis);
