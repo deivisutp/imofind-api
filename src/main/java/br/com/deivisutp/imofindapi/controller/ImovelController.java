@@ -70,7 +70,7 @@ public class ImovelController {
         Long totalElements = imovelService.count(filter);
         List<Imovel> result = imovelService.getImoveis(filter, totalElements);
 
-        ImovelResponseDTO response = new ImovelResponseDTO(result);
+        ImovelResponseDTO response = new ImovelResponseDTO(result, totalElements);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
