@@ -1,11 +1,9 @@
 package br.com.deivisutp.imofindapi.config;
 
-import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -14,6 +12,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -22,10 +21,10 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
-@EnableWebMvc
+@Import(SpringDataRestConfiguration.class)
 public class SwaggerConfig implements WebMvcConfigurer {
 
-    private static final String BASE_PACKAGE = "br.com.deivisutp.brasileiraoapi.controller";
+    private static final String BASE_PACKAGE = "br.com.deivisutp.imofindapi.controller";
     private static final String API_TITULO = "Imóveis - Scraping";
     private static final String API_DESCRICAO = "API REST que obtem dados de  imóveis";
     private static final String API_VERSAO = "1.0.0";

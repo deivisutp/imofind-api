@@ -74,6 +74,7 @@ public class ImovelController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/scrapingRealState", method = RequestMethod.POST)
     @PostMapping("/scrapingRealState")
     public ResponseEntity<String> varrerImoveis() {
         scrappingImoFindService.executeScrappingService();
