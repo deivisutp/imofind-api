@@ -6,16 +6,35 @@ import br.com.deivisutp.imofindapi.factory.HandlerFactory;
 import br.com.deivisutp.imofindapi.util.Address;
 import br.com.deivisutp.imofindapi.util.GenericBuilder;
 import br.com.deivisutp.imofindapi.util.ImovelDTOBuilder;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+
+import static org.mockito.Mockito.*;
 
 import java.util.Date;
+import java.util.List;
 
 class ImoFindApiApplicationTests {
+
+	@Mock
+	List<ImovelDTO> imoveis;
+
+	@Spy
+	Util mockedUtil;
 
 	@Test
 	void contextLoads() {
 
+	}
+
+	@BeforeEach
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
@@ -64,5 +83,47 @@ class ImoFindApiApplicationTests {
 
 		stringHandler.handle("Hello");
 		dateHandler.handle(new Date());
+	}
+
+	@Test
+	void shouldCityMockTest() {
+		ImovelDTO imovelMock = mock(ImovelDTO.class);
+		when(imovelMock.getCity())
+				.thenReturn("Blumenau");
+
+		assert imovelMock.getCity().equalsIgnoreCase("Blumenau");
+	}
+
+	@Test
+	void shoulListImoveisTest() {
+		when(imoveis.get(0)).thenReturn(new ImovelDTOBuilder()
+											.with(data -> {
+												data.setId(1L);
+												data.setPrice(400000F);
+												data.setTitulo("Vendo");
+											})
+											.createImovelDTO());
+		when(imoveis.size()).thenReturn(1);
+
+		assert(imoveis.get(0).getTitulo().equalsIgnoreCase("Vendo"));
+		assert(imoveis.size() == 1);
+	}
+
+	@Test
+	void shouldSpyImoveisTest() {
+		when(mockedUtil.process(1,1)).thenReturn(5);
+
+		assertEquals(5, mockedUtil.process(1,1));
+		System.out.println(mockedUtil.process(1,1));
+
+		assertEquals(20, mockedUtil.process(19,1));
+		System.out.println(mockedUtil.process(19,1));
+	}
+
+	class Util {
+		public int process(int x, int y) {
+			System.out.println("Params %x and %y" + x +  y);
+			return x+y;
+		}
 	}
 }
