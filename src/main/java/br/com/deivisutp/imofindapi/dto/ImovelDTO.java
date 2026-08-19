@@ -1,10 +1,11 @@
 package br.com.deivisutp.imofindapi.dto;
 
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class ImovelDTO implements Serializable {
 
     private String extra;
 
-    private Float price;
+    private BigDecimal price;
 
     private String price_varchar;
 
@@ -35,7 +36,7 @@ public class ImovelDTO implements Serializable {
 
     private String type;
 
-    public ImovelDTO(Long id, String titulo, String extra, Float price, String origem, String price_varchar, String link, String image, String city, String neighborhood, String type) {
+    public ImovelDTO(Long id, String titulo, String extra, BigDecimal price, String origem, String price_varchar, String link, String image, String city, String neighborhood, String type) {
         this.id = id;
         this.titulo = titulo;
         this.extra = extra;
@@ -49,7 +50,7 @@ public class ImovelDTO implements Serializable {
         this.type = type;
     }
 
-    public ImovelDTO(String titulo, String extra, Float price, String origem, String price_varchar, String link, String image, String city, String neighborhood, String type) {
+    public ImovelDTO(String titulo, String extra, BigDecimal price, String origem, String price_varchar, String link, String image, String city, String neighborhood, String type) {
         this.titulo = titulo;
         this.extra = extra;
         this.price = price;
@@ -62,7 +63,7 @@ public class ImovelDTO implements Serializable {
         this.type = type;
     }
 
-    public ImovelDTO(String titulo, String extra, Float price, String origem, String price_varchar, String link, String image) {
+    public ImovelDTO(String titulo, String extra, BigDecimal price, String origem, String price_varchar, String link, String image) {
         this.titulo = titulo;
         this.extra = extra;
         this.price = price;
@@ -72,7 +73,7 @@ public class ImovelDTO implements Serializable {
         this.image = image;
     }
 
-    public ImovelDTO(String titulo, String extra, Float price, String origem, String price_varchar, String link) {
+    public ImovelDTO(String titulo, String extra, BigDecimal price, String origem, String price_varchar, String link) {
         this.titulo = titulo;
         this.extra = extra;
         this.price = price;
@@ -81,7 +82,7 @@ public class ImovelDTO implements Serializable {
         this.link = link;
     }
 
-    public ImovelDTO(String titulo, String extra, Float price, String origem, String price_varchar) {
+    public ImovelDTO(String titulo, String extra, BigDecimal price, String origem, String price_varchar) {
         this.titulo = titulo;
         this.extra = extra;
         this.price = price;

@@ -8,7 +8,6 @@ import br.com.deivisutp.imofindapi.exception.StandardError;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
 import br.com.deivisutp.imofindapi.service.ImovelService;
 import br.com.deivisutp.imofindapi.service.ScrappingImoFindService;
-import br.com.deivisutp.imofindapi.service.ScrappingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -20,7 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,18 +31,7 @@ public class ImovelController {
     private ImovelService imovelService;
 
     @Autowired
-    private ScrappingService scrappingService;
-
-    @Autowired
     private ScrappingImoFindService scrappingImoFindService;
-
-    @Deprecated
-    @GetMapping("/buscarImoveis")
-    public ResponseEntity<List<ImovelDTO>> buscarImoveis() {
-        List<ImovelDTO> lista = scrappingService.buscarImoveis();
-
-        return ResponseEntity.ok().body(lista);
-    }
 
     @Deprecated
     @GetMapping("/busca")

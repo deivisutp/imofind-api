@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -30,8 +31,8 @@ public class Imovel implements Serializable {
     @Column(name = "extra", length = 4000)
     private String extra;
 
-    @Column(name = "price")
-    private Float price;
+    @Column(name = "price", precision = 15, scale = 2)
+    private BigDecimal price;
 
     @Column(name = "origem")
     private String origem;
@@ -53,4 +54,19 @@ public class Imovel implements Serializable {
 
     @Column(name = "type")
     private String type;
+
+    @Column(name = "source_listing_id")
+    private Long sourceListingId;
+
+    @Column(name = "external_id", length = 64)
+    private String externalId;
+
+    @Column(name = "active")
+    private Boolean active;
+
+    @Column(name = "first_seen_at")
+    private Instant firstSeenAt;
+
+    @Column(name = "last_seen_at")
+    private Instant lastSeenAt;
 }

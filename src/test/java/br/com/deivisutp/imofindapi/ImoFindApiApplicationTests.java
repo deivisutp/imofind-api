@@ -8,17 +8,19 @@ import br.com.deivisutp.imofindapi.util.GenericBuilder;
 import br.com.deivisutp.imofindapi.util.ImovelDTOBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@ExtendWith(MockitoExtension.class)
 class ImoFindApiApplicationTests {
 
 	@Mock
@@ -32,18 +34,13 @@ class ImoFindApiApplicationTests {
 
 	}
 
-	@BeforeEach
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-	}
-
 	@Test
 	void testingGenericBuilder() {
 		ImovelDTO imovel = GenericBuilder.of(ImovelDTO::new)
 							.with(ImovelDTO::setCity,"Blumenau")
 							.with(ImovelDTO::setTitulo, "Vendo ape")
 							.with(ImovelDTO::setId, 1L)
-							.with(ImovelDTO::setPrice, 560000.00F)
+							.with(ImovelDTO::setPrice, new BigDecimal("560000.00"))
 							.build();
 
 		System.out.println(imovel);
@@ -55,7 +52,7 @@ class ImoFindApiApplicationTests {
 		ImovelDTO imovelDTO = new ImovelDTOBuilder()
 								.with(data -> {
 									data.setId(1L);
-									data.setPrice(400000F);
+									data.setPrice(new BigDecimal("400000"));
 									data.setTitulo("VEndo");
 								})
 								.createImovelDTO();
@@ -99,7 +96,7 @@ class ImoFindApiApplicationTests {
 		when(imoveis.get(0)).thenReturn(new ImovelDTOBuilder()
 											.with(data -> {
 												data.setId(1L);
-												data.setPrice(400000F);
+												data.setPrice(new BigDecimal("400000"));
 												data.setTitulo("Vendo");
 											})
 											.createImovelDTO());
@@ -120,7 +117,7 @@ class ImoFindApiApplicationTests {
 		System.out.println(mockedUtil.process(19,1));
 	}
 
-	class Util {
+	static class Util {
 		public int process(int x, int y) {
 			System.out.println("Params %x and %y" + x +  y);
 			return x+y;

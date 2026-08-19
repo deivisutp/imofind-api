@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgis/postgis:13-3.4
+    container_name: imofind-postgres
+    environment:
+      POSTGRES_DB: imofind
+      POSTGRES_USER: imofind
+      POSTGRES_PASSWORD: imofind
+    ports:
+      - "5432:5432"
+    volumes:
+      - imofind_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U imofind -d imofind"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  imofind_pgdata:
