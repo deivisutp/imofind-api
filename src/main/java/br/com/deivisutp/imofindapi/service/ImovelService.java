@@ -8,7 +8,6 @@ import br.com.deivisutp.imofindapi.repository.ImovelRepository;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
 import br.com.deivisutp.imofindapi.repository.implementation.ImovelRepositoryImpl;
 import br.com.deivisutp.imofindapi.util.DataUtil;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,9 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +32,6 @@ public class ImovelService {
 
     @Autowired
     private ImovelRepositoryImpl imovelRepo;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private ListingIngestService listingIngestService;
@@ -56,9 +52,25 @@ public class ImovelService {
     }
 
     public List<ImovelDTO> listarImoveis() {
-        List<ImovelDTO> imoveis = new ArrayList<>();
-        imoveis = modelMapper.map(imovelRepository.findAll(), List.class);
-        return imoveis;
+        return imovelRepository.findAll().stream()
+                .map(ImovelService::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private static ImovelDTO toDto(Imovel imovel) {
+        ImovelDTO dto = new ImovelDTO();
+        dto.setId(imovel.getId());
+        dto.setTitulo(imovel.getTitulo());
+        dto.setExtra(imovel.getExtra());
+        dto.setPrice(imovel.getPrice());
+        dto.setPrice_varchar(imovel.getPrice_varchar());
+        dto.setOrigem(imovel.getOrigem());
+        dto.setLink(imovel.getLink());
+        dto.setImage(imovel.getImage());
+        dto.setCity(imovel.getCity());
+        dto.setNeighborhood(imovel.getNeighborhood());
+        dto.setType(imovel.getType());
+        return dto;
     }
 
     public Page<Imovel> serachImoveis(ImovelFilter filter, String descricao, Pageable pageable) {

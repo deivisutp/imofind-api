@@ -4,14 +4,11 @@ import br.com.deivisutp.imofindapi.dto.ImovelDTO;
 import br.com.deivisutp.imofindapi.dto.ImovelFilterDTO;
 import br.com.deivisutp.imofindapi.dto.ImovelResponseDTO;
 import br.com.deivisutp.imofindapi.entities.Imovel;
-import br.com.deivisutp.imofindapi.exception.StandardError;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
 import br.com.deivisutp.imofindapi.service.ImovelService;
 import br.com.deivisutp.imofindapi.service.ScrappingImoFindService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +16,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/imoveis")
-@Api("Api de imoveis")
+@Tag(name = "Imóveis", description = "API de imóveis")
 public class ImovelController {
 
     @Autowired
@@ -44,15 +41,7 @@ public class ImovelController {
                 HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Buscar imóveis")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ImovelResponseDTO.class),
-            @ApiResponse(code = 400, message = "Bad request", response = StandardError.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = StandardError.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = StandardError.class),
-            @ApiResponse(code = 404, message = "Not found", response = StandardError.class),
-            @ApiResponse(code = 500, message = "Internal server error", response = StandardError.class)
-    })
+    @Operation(summary = "Buscar imóveis")
     @GetMapping("/buscar")
     public ResponseEntity<ImovelResponseDTO> get(ImovelFilterDTO filter) {
         Long totalElements = imovelService.count(filter);
@@ -62,7 +51,6 @@ public class ImovelController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/scrapingRealState", method = RequestMethod.POST)
     @PostMapping("/scrapingRealState")
     public ResponseEntity<String> varrerImoveis() {
         scrappingImoFindService.executeScrappingService();
