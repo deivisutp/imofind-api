@@ -4,6 +4,7 @@ import br.com.deivisutp.imofindapi.dto.ImovelDTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.function.Consumer;
 
 @Getter
@@ -15,7 +16,7 @@ public class ImovelDTOBuilder {
 
     private String extra;
 
-    private Float price;
+    private BigDecimal price;
 
     private String price_varchar;
 

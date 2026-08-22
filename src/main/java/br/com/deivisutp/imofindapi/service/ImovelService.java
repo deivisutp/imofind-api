@@ -37,6 +37,9 @@ public class ImovelService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private ListingIngestService listingIngestService;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -103,17 +106,11 @@ public class ImovelService {
         return em.createQuery(criteria).getSingleResult();
     }
 
-    public void delete() {
-        imovelRepository.deleteAll();
-    }
-
     public void save(List<ImovelDTO> lista) {
-        List<Imovel> imoveis = lista
-                .stream()
-                .map(imovel -> modelMapper.map(imovel, Imovel.class))
-                .collect(Collectors.toList());
-
-        imovelRepository.saveAll(imoveis);
+        if (lista == null) {
+            return;
+        }
+        lista.forEach(listingIngestService::ingest);
     }
 
     public void save(ImovelDTO imovelDTO) {

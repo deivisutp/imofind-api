@@ -1,6 +1,6 @@
 package br.com.deivisutp.imofindapi.task;
 
-import br.com.deivisutp.imofindapi.service.ScrappingService;
+import br.com.deivisutp.imofindapi.service.ScrappingImoFindService;
 import br.com.deivisutp.imofindapi.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class ImovelTask {
     private static final String DD_MM_YYYY_HH_MM_SS = "dd/MM/yyyy HH:mm:ss";
 
     @Autowired
-    private ScrappingService scrappingService;
+    private ScrappingImoFindService scrappingImoFindService;
 
     /*
     @Scheduled(cron = "0/30 * 19-23 * * WED", zone = TIME_ZONE)
@@ -57,7 +57,7 @@ public class ImovelTask {
     private void startScheduling(String day) {
         this.saveLogInfo(String.format("%s: %s", day, DataUtil.formataDateEmString(new Date(), DD_MM_YYYY_HH_MM_SS)));
 
-        scrappingService.verificaImoveisPeriodo();
+        scrappingImoFindService.executeScrappingService();
     }
 
     private void saveLogInfo(String msg) {

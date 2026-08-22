@@ -1,17 +1,13 @@
 package br.com.deivisutp.imofindapi.util.implementation;
 
+import br.com.deivisutp.imofindapi.config.ScrapingProperties;
 import br.com.deivisutp.imofindapi.dto.ImovelDTO;
-import br.com.deivisutp.imofindapi.service.ImovelService;
+import br.com.deivisutp.imofindapi.util.DocumentFetcher;
 import br.com.deivisutp.imofindapi.util.IScrapping;
 import br.com.deivisutp.imofindapi.util.ScrappingUtil;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -21,84 +17,74 @@ import java.util.List;
 import static br.com.deivisutp.imofindapi.util.ScrappingList.ACRC;
 
 @Component
-@Qualifier(ACRC)
 public class ACRCScrapping implements IScrapping {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScrappingUtil.class);
-
-    @Autowired
-    private ImovelService imovelService;
-
-    private static final String LISTA_ACRC = "div[class=resultado]"; //"div[class=todos_imoveis]";
+    private static final String LISTA_ACRC = "div[class=resultado]";
     private static final String ACRC_TITULO = "div[class=info_imoveis]";
     private static final String ACRC_EXTRA = "div[class=detalhes]";
-    private static final String ACRC_URL ="https://www.acrcimoveis.com.br/comprar/sc/blumenau_indaial_timbo/apartamento_casa/valor-0_500000/ordem-valor/resultado-crescente/";
+    private static final String ACRC_URL = "https://www.acrcimoveis.com.br/comprar/sc/blumenau_indaial_timbo/apartamento_casa/valor-0_500000/ordem-valor/resultado-crescente/";
     private static final String PAGE_ACRC = "pagina-";
     private static final String ACRC_WEBSITE = "https://www.acrcimoveis.com.br";
-    private static final String ACRC_TEXTO = "div[id=ctrl_sticky]";
+    private static final int MAX_EXTRA_LENGTH = 255;
 
-    private String getTexto(String texto) {
-        try {
-            if (texto.length() > 255)
-                return texto.substring(0, 255);
+    private final DocumentFetcher fetcher;
+    private final ScrapingProperties properties;
 
-            return texto;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return texto;
+    public ACRCScrapping(DocumentFetcher fetcher, ScrapingProperties properties) {
+        this.fetcher = fetcher;
+        this.properties = properties;
     }
 
     @Override
-    public void varrerImoveis() {
-        Document document = null;
-        List<ImovelDTO> listImoveis = new ArrayList<>();
+    public String sourceCode() {
+        return ACRC;
+    }
 
-        Elements imoveis = null;
-        try {
-            System.out.println(ACRC_URL);
-            LOGGER.info(ACRC_URL);
-            for (int i = 1; i < 30; i++) {
-                document = Jsoup.connect(ACRC_URL + PAGE_ACRC + i).get();
+    @Override
+    public String extractorVersion() {
+        return "acrc-v1";
+    }
 
-                imoveis = document.select(LISTA_ACRC);
-
-                if (imoveis.size() == 0)
-                    break;
-
-                for (Element e : imoveis) {
-                    try {
-                        Document doc = Jsoup.connect(String.join("", ACRC_WEBSITE, e.select("a").attr("href"))).timeout(0).get();
-
-                        String extra = doc.select(ACRC_TEXTO).select("div[class=texto]").first().text();
-                        listImoveis.add(new ImovelDTO(
-                                e.select(ACRC_TITULO).text(),
-                                getTexto(extra),
-                                ScrappingUtil.convertStringToFloat(e.select("div[class=valor]").select("h5").text()),
-                                "ACRC",
-                                e.select("div[class=valor]").select("h5").text(),
-                                String.join("", ACRC_WEBSITE, e.select("a").attr("href")),
-                                e.select("img").attr("src"),
-                                e.select(ACRC_TITULO).select("h4[class=cidade]").text(),
-                                e.select(ACRC_TITULO).select("h4[class=bairro]").text(),
-                                e.select(ACRC_TITULO).select("h3[class=tipo]").text()
-                        ));
-                    } catch (RuntimeException exception) {
-                        exception.printStackTrace();
-                        LOGGER.error(exception.getMessage());
-                    }
-                }
+    @Override
+    public List<ImovelDTO> collect() throws IOException {
+        List<ImovelDTO> result = new ArrayList<>();
+        for (int page = 1; page < properties.getMaxPages(); page++) {
+            Document document = fetcher.get(ACRC_URL + PAGE_ACRC + page);
+            List<ImovelDTO> pageListings = extract(document);
+            if (pageListings.isEmpty()) {
+                break;
             }
-            imovelService.save(listImoveis);
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-            LOGGER.error(e.getMessage());
-        } finally {
-            if (listImoveis != null && !listImoveis.isEmpty())
-                imovelService.save(listImoveis);
+            result.addAll(pageListings);
         }
+        return result;
+    }
 
+    @Override
+    public List<ImovelDTO> extract(Document document) {
+        List<ImovelDTO> list = new ArrayList<>();
+        Elements imoveis = document.select(LISTA_ACRC);
+        for (Element e : imoveis) {
+            String priceText = e.select("div[class=valor]").select("h5").text();
+            list.add(new ImovelDTO(
+                    e.select(ACRC_TITULO).text(),
+                    truncate(e.select(ACRC_EXTRA).text()),
+                    ScrappingUtil.convertStringToBigDecimal(priceText),
+                    ACRC,
+                    priceText,
+                    ACRC_WEBSITE + e.select("a").attr("href"),
+                    e.select("img").attr("src"),
+                    e.select(ACRC_TITULO).select("h4[class=cidade]").text(),
+                    e.select(ACRC_TITULO).select("h4[class=bairro]").text(),
+                    e.select(ACRC_TITULO).select("h3[class=tipo]").text()
+            ));
+        }
+        return list;
+    }
+
+    private static String truncate(String text) {
+        if (text == null || text.length() <= MAX_EXTRA_LENGTH) {
+            return text;
+        }
+        return text.substring(0, MAX_EXTRA_LENGTH);
     }
 }

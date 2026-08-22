@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,8 +17,8 @@ public class ImovelFilterDTO {
     private Long id;
     private String titulo;
     private String extra;
-    private Float initialPrice;
-    private Float endPrice;
+    private BigDecimal initialPrice;
+    private BigDecimal endPrice;
     private String origem;
     private String city;
     private String neighborhood;
