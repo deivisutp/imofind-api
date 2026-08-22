@@ -13,7 +13,7 @@ public class ImovelDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotNull
-    private Long id;
+    private Long id;   
 
     private String titulo;
 
