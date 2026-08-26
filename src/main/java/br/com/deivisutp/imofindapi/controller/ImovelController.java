@@ -44,6 +44,9 @@ public class ImovelController {
     @Operation(summary = "Buscar imóveis")
     @GetMapping("/buscar")
     public ResponseEntity<ImovelResponseDTO> get(ImovelFilterDTO filter) {
+        if (filter.getPage() == null) filter.setPage(1);
+        if (filter.getSize() == null) filter.setSize(20);
+
         Long totalElements = imovelService.count(filter);
         List<Imovel> result = imovelService.getImoveis(filter, totalElements);
 
