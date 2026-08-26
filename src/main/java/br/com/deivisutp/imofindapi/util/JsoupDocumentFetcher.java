@@ -51,6 +51,36 @@ public class JsoupDocumentFetcher implements DocumentFetcher {
         throw lastError != null ? lastError : new IOException("Falha ao obter " + url);
     }
 
+    @Override
+    public String getText(String url) throws IOException {
+        ScrapingProperties.Fetcher cfg = properties.getFetcher();
+        IOException lastError = null;
+        for (int attempt = 0; attempt <= cfg.getMaxRetries(); attempt++) {
+            try {
+                return Jsoup.connect(url)
+                        .userAgent(cfg.getUserAgent())
+                        .timeout(cfg.getTimeoutMs())
+                        .followRedirects(true)
+                        .ignoreContentType(true)
+                        .maxBodySize(0)
+                        .method(Connection.Method.GET)
+                        .execute()
+                        .body();
+            } catch (HttpStatusException e) {
+                if (isRetryable(e.getStatusCode())) {
+                    lastError = e;
+                    backoff(attempt, url, e);
+                } else {
+                    throw e;
+                }
+            } catch (SocketTimeoutException e) {
+                lastError = e;
+                backoff(attempt, url, e);
+            }
+        }
+        throw lastError != null ? lastError : new IOException("Falha ao obter " + url);
+    }
+
     private static boolean isRetryable(int statusCode) {
         return statusCode == 429 || statusCode >= 500;
     }

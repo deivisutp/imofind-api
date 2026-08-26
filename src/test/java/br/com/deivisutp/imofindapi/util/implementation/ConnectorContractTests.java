@@ -32,17 +32,20 @@ class ConnectorContractTests {
     }
 
     @Test
-    void acrcExtractsListingFromFrozenHtml() throws IOException {
-        List<ImovelDTO> list = new ACRCScrapping(null, null).extract(load("fixtures/acrc-list.html"));
+    void acrcExtractsSaleListingsFromDataEndpoint() throws IOException {
+        List<ImovelDTO> list = new ACRCScrapping(null).parseListings(loadString("fixtures/acrc-data.js"));
 
+        // filtra somente venda: o fixture tem 1 sale + 1 rent
         assertThat(list).hasSize(1);
         ImovelDTO dto = list.get(0);
-        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("480000.00"));
+        assertThat(dto.getTitulo()).isEqualTo("Casa em Velha, Blumenau");
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("480000"));
         assertThat(dto.getOrigem()).isEqualTo("ACRC");
         assertThat(dto.getCity()).isEqualTo("Blumenau");
         assertThat(dto.getNeighborhood()).isEqualTo("Velha");
         assertThat(dto.getType()).isEqualTo("Casa");
-        assertThat(dto.getLink()).isEqualTo("https://www.acrcimoveis.com.br/imovel/casa-1");
+        assertThat(dto.getLink()).isEqualTo("https://www.acrcimoveis.com.br/imovel/CA03902");
+        assertThat(dto.getExtra()).isEqualTo("3 quartos, 1 suite, 2 vagas, 120m2");
     }
 
     @Test
@@ -65,6 +68,15 @@ class ConnectorContractTests {
                 throw new IOException("Fixture não encontrado: " + resource);
             }
             return Jsoup.parse(new String(in.readAllBytes(), StandardCharsets.UTF_8));
+        }
+    }
+
+    private String loadString(String resource) throws IOException {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
+            if (in == null) {
+                throw new IOException("Fixture não encontrado: " + resource);
+            }
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 }

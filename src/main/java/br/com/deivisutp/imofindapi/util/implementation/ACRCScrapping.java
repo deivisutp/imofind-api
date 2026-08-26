@@ -1,38 +1,40 @@
 package br.com.deivisutp.imofindapi.util.implementation;
 
-import br.com.deivisutp.imofindapi.config.ScrapingProperties;
 import br.com.deivisutp.imofindapi.dto.ImovelDTO;
 import br.com.deivisutp.imofindapi.util.DocumentFetcher;
 import br.com.deivisutp.imofindapi.util.IScrapping;
-import br.com.deivisutp.imofindapi.util.ScrappingUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static br.com.deivisutp.imofindapi.util.ScrappingList.ACRC;
 
+/**
+ * O ACRC virou SPA: o catalogo e servido em /api/data como `window.ACRC = {json};`.
+ * Consumir esse JSON e mais estavel que raspar o HTML renderizado por JavaScript.
+ */
 @Component
 public class ACRCScrapping implements IScrapping {
 
-    private static final String LISTA_ACRC = "div[class=resultado]";
-    private static final String ACRC_TITULO = "div[class=info_imoveis]";
-    private static final String ACRC_EXTRA = "div[class=detalhes]";
-    private static final String ACRC_URL = "https://www.acrcimoveis.com.br/comprar/sc/blumenau_indaial_timbo/apartamento_casa/valor-0_500000/ordem-valor/resultado-crescente/";
-    private static final String PAGE_ACRC = "pagina-";
-    private static final String ACRC_WEBSITE = "https://www.acrcimoveis.com.br";
+    private static final String ACRC_DATA_URL = "https://www.acrcimoveis.com.br/api/data?slim=1";
+    private static final String ACRC_LISTING_BASE = "https://www.acrcimoveis.com.br/imovel/";
+    private static final String SALE = "sale";
     private static final int MAX_EXTRA_LENGTH = 255;
+    private static final Locale PT_BR = Locale.forLanguageTag("pt-BR");
 
     private final DocumentFetcher fetcher;
-    private final ScrapingProperties properties;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ACRCScrapping(DocumentFetcher fetcher, ScrapingProperties properties) {
+    public ACRCScrapping(DocumentFetcher fetcher) {
         this.fetcher = fetcher;
-        this.properties = properties;
     }
 
     @Override
@@ -42,43 +44,92 @@ public class ACRCScrapping implements IScrapping {
 
     @Override
     public String extractorVersion() {
-        return "acrc-v1";
+        return "acrc-v2-json";
     }
 
     @Override
     public List<ImovelDTO> collect() throws IOException {
+        return parseListings(fetcher.getText(ACRC_DATA_URL));
+    }
+
+    @Override
+    public List<ImovelDTO> extract(Document listPage) {
+        return parseListings(listPage.wholeText());
+    }
+
+    /** Extrai apenas anuncios de venda do payload `window.ACRC = {json};`. */
+    List<ImovelDTO> parseListings(String rawBody) {
         List<ImovelDTO> result = new ArrayList<>();
-        for (int page = 1; page < properties.getMaxPages(); page++) {
-            Document document = fetcher.get(ACRC_URL + PAGE_ACRC + page);
-            List<ImovelDTO> pageListings = extract(document);
-            if (pageListings.isEmpty()) {
-                break;
+        for (JsonNode listing : readRoot(rawBody).path("listings")) {
+            if (SALE.equals(listing.path("transaction").asText())) {
+                result.add(toDto(listing));
             }
-            result.addAll(pageListings);
         }
         return result;
     }
 
-    @Override
-    public List<ImovelDTO> extract(Document document) {
-        List<ImovelDTO> list = new ArrayList<>();
-        Elements imoveis = document.select(LISTA_ACRC);
-        for (Element e : imoveis) {
-            String priceText = e.select("div[class=valor]").select("h5").text();
-            list.add(new ImovelDTO(
-                    e.select(ACRC_TITULO).text(),
-                    truncate(e.select(ACRC_EXTRA).text()),
-                    ScrappingUtil.convertStringToBigDecimal(priceText),
-                    ACRC,
-                    priceText,
-                    ACRC_WEBSITE + e.select("a").attr("href"),
-                    e.select("img").attr("src"),
-                    e.select(ACRC_TITULO).select("h4[class=cidade]").text(),
-                    e.select(ACRC_TITULO).select("h4[class=bairro]").text(),
-                    e.select(ACRC_TITULO).select("h3[class=tipo]").text()
-            ));
+    private JsonNode readRoot(String rawBody) {
+        String json = rawBody
+                .replaceFirst("^\\s*window\\.ACRC\\s*=\\s*", "")
+                .replaceFirst(";\\s*$", "");
+        try {
+            return objectMapper.readTree(json);
+        } catch (IOException e) {
+            throw new IllegalStateException("JSON invalido do ACRC: " + e.getMessage(), e);
         }
-        return list;
+    }
+
+    private ImovelDTO toDto(JsonNode listing) {
+        String id = listing.path("id").asText(null);
+        BigDecimal price = listing.hasNonNull("price") ? new BigDecimal(listing.get("price").asText()) : null;
+        return new ImovelDTO(
+                listing.path("title").asText(null),
+                buildExtra(listing),
+                price,
+                ACRC,
+                formatPrice(price),
+                id != null ? ACRC_LISTING_BASE + id : null,
+                firstImage(listing),
+                listing.path("city").asText(null),
+                listing.path("neighborhood").asText(null),
+                listing.path("typePt").asText(null)
+        );
+    }
+
+    private static String buildExtra(JsonNode listing) {
+        StringBuilder sb = new StringBuilder();
+        appendCount(sb, listing.path("bedrooms").asInt(0), "quarto", "quartos");
+        appendCount(sb, listing.path("suites").asInt(0), "suite", "suites");
+        appendCount(sb, listing.path("garage").asInt(0), "vaga", "vagas");
+        int area = listing.path("livingArea").asInt(0);
+        if (area > 0) {
+            appendSeparator(sb);
+            sb.append(area).append("m2");
+        }
+        return truncate(sb.toString());
+    }
+
+    private static void appendCount(StringBuilder sb, int value, String singular, String plural) {
+        if (value <= 0) {
+            return;
+        }
+        appendSeparator(sb);
+        sb.append(value).append(' ').append(value == 1 ? singular : plural);
+    }
+
+    private static void appendSeparator(StringBuilder sb) {
+        if (sb.length() > 0) {
+            sb.append(", ");
+        }
+    }
+
+    private static String firstImage(JsonNode listing) {
+        JsonNode images = listing.path("images");
+        return images.isArray() && !images.isEmpty() ? images.get(0).asText(null) : null;
+    }
+
+    private static String formatPrice(BigDecimal price) {
+        return price == null ? null : NumberFormat.getCurrencyInstance(PT_BR).format(price);
     }
 
     private static String truncate(String text) {
