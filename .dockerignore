@@ -1,0 +1,10 @@
+# O frontend nao faz parte da imagem da API (deploy separado no Cloudflare Pages).
+frontend/
+
+# Artefatos de build e arquivos locais
+target/
+.git/
+.github/
+.idea/
+*.iml
+node_modules/

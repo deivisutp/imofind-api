@@ -2,6 +2,7 @@ package br.com.deivisutp.imofindapi.service;
 
 import br.com.deivisutp.imofindapi.dto.ImovelDTO;
 import br.com.deivisutp.imofindapi.dto.ImovelFilterDTO;
+import br.com.deivisutp.imofindapi.dto.NeighborhoodAggregate;
 import br.com.deivisutp.imofindapi.entities.Imovel;
 import br.com.deivisutp.imofindapi.exception.NotFoundException;
 import br.com.deivisutp.imofindapi.repository.ImovelRepository;
@@ -148,5 +149,13 @@ public class ImovelService {
 
     public List<Imovel> getImoveis(ImovelFilterDTO filter, Long totalElements) {
         return imovelRepo.findAll(filter, totalElements);
+    }
+
+    public List<NeighborhoodAggregate> getNeighborhoodAggregates(String city, String type) {
+        return imovelRepository.aggregateByNeighborhood(emptyToNull(city), emptyToNull(type));
+    }
+
+    private static String emptyToNull(String value) {
+        return (value == null || value.isBlank()) ? null : value;
     }
 }
