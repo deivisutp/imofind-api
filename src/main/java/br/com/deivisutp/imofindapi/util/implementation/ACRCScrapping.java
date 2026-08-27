@@ -82,7 +82,7 @@ public class ACRCScrapping implements IScrapping {
     private ImovelDTO toDto(JsonNode listing) {
         String id = listing.path("id").asText(null);
         BigDecimal price = listing.hasNonNull("price") ? new BigDecimal(listing.get("price").asText()) : null;
-        return new ImovelDTO(
+        ImovelDTO dto = new ImovelDTO(
                 listing.path("title").asText(null),
                 buildExtra(listing),
                 price,
@@ -94,6 +94,15 @@ public class ACRCScrapping implements IScrapping {
                 listing.path("neighborhood").asText(null),
                 listing.path("typePt").asText(null)
         );
+        dto.setArea(extractArea(listing));
+        return dto;
+    }
+
+    /** Area util quando disponivel; cai para a area do terreno. */
+    private static BigDecimal extractArea(JsonNode listing) {
+        double living = listing.path("livingArea").asDouble(0);
+        double area = living > 0 ? living : listing.path("lotArea").asDouble(0);
+        return area > 0 ? BigDecimal.valueOf(area) : null;
     }
 
     private static String buildExtra(JsonNode listing) {

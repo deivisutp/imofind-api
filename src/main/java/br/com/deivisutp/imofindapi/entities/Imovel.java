@@ -55,6 +55,9 @@ public class Imovel implements Serializable {
     @Column(name = "type")
     private String type;
 
+    @Column(name = "area", precision = 12, scale = 2)
+    private BigDecimal area;
+
     @Column(name = "source_listing_id")
     private Long sourceListingId;
 

@@ -36,6 +36,8 @@ public class ImovelDTO implements Serializable {
 
     private String type;
 
+    private BigDecimal area;
+
     public ImovelDTO(Long id, String titulo, String extra, BigDecimal price, String origem, String price_varchar, String link, String image, String city, String neighborhood, String type) {
         this.id = id;
         this.titulo = titulo;

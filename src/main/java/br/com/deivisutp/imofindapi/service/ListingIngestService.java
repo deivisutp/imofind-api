@@ -191,6 +191,7 @@ public class ListingIngestService {
         imovel.setCity(dto.getCity());
         imovel.setNeighborhood(dto.getNeighborhood());
         imovel.setType(dto.getType());
+        imovel.setArea(dto.getArea());
         imovel.setActive(active);
         if (imovel.getFirstSeenAt() == null) {
             imovel.setFirstSeenAt(listing.getFirstSeenAt());

@@ -2,6 +2,7 @@ package br.com.deivisutp.imofindapi.controller;
 
 import br.com.deivisutp.imofindapi.dto.ImovelFilterDTO;
 import br.com.deivisutp.imofindapi.dto.ImovelResponseDTO;
+import br.com.deivisutp.imofindapi.dto.NeighborhoodAggregate;
 import br.com.deivisutp.imofindapi.entities.Imovel;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
 import br.com.deivisutp.imofindapi.service.ImovelService;
@@ -46,5 +47,13 @@ public class ImovelController {
 
         ImovelResponseDTO response = new ImovelResponseDTO(result, totalElements);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Indicadores agregados por bairro")
+    @GetMapping("/indicadores")
+    public ResponseEntity<List<NeighborhoodAggregate>> indicadores(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String type) {
+        return ResponseEntity.ok(imovelService.getNeighborhoodAggregates(city, type));
     }
 }
