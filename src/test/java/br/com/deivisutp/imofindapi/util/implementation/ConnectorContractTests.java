@@ -62,6 +62,24 @@ class ConnectorContractTests {
         assertThat(dto.getLink()).isEqualTo("https://www.zapimoveis.com.br/imovel/zap-1");
     }
 
+    @Test
+    void portalExtractsOnlySaleListingsFromFrozenHtml() throws IOException {
+        List<ImovelDTO> list = new ImoveisPortalScrapping(null, null).extract(load("fixtures/portal-list.html"));
+
+        // fixture tem 1 venda + 1 locacao (sem valorvenda): so a venda entra
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("590000"));
+        assertThat(dto.getOrigem()).isEqualTo("IMOVEIS-PORTAL");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Victor Konder");
+        assertThat(dto.getType()).isEqualTo("Apartamento");
+        assertThat(dto.getArea()).isEqualByComparingTo(new BigDecimal("94.81"));
+        assertThat(dto.getLink())
+                .isEqualTo("https://www.imoveisportal.com/apartamento/venda/blumenau/victor-konder/35718433");
+        assertThat(dto.getExtra()).isEqualTo("2 quartos, 2 banheiros, 1 vaga, 94.81m2");
+    }
+
     private Document load(String resource) throws IOException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
             if (in == null) {
