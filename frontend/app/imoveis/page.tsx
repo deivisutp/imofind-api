@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { fetchImoveis, formatPrice, type Imovel } from "@/lib/api";
+import { fetchImoveis, fetchFontes, formatPrice, type Imovel } from "@/lib/api";
 
 export default function ImoveisPage() {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
@@ -11,6 +11,8 @@ export default function ImoveisPage() {
   const [error, setError] = useState<string | null>(null);
   const [city, setCity] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
+  const [origem, setOrigem] = useState("");
+  const [fontes, setFontes] = useState<string[]>([]);
 
   async function load() {
     setLoading(true);
@@ -19,6 +21,7 @@ export default function ImoveisPage() {
       const data = await fetchImoveis({
         city: city || undefined,
         neighborhood: neighborhood || undefined,
+        origem: origem || undefined,
         page: 1,
         size: 30,
       });
@@ -32,6 +35,9 @@ export default function ImoveisPage() {
   }
 
   useEffect(() => {
+    fetchFontes()
+      .then(setFontes)
+      .catch(() => setFontes([]));
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -61,6 +67,14 @@ export default function ImoveisPage() {
           value={neighborhood}
           onChange={(e) => setNeighborhood(e.target.value)}
         />
+        <select value={origem} onChange={(e) => setOrigem(e.target.value)}>
+          <option value="">Todas as fontes</option>
+          {fontes.map((f) => (
+            <option key={f} value={f}>
+              {f}
+            </option>
+          ))}
+        </select>
         <button className="button" type="submit">
           Filtrar
         </button>
@@ -73,6 +87,17 @@ export default function ImoveisPage() {
         <div className="grid">
           {imoveis.map((imovel, i) => (
             <article className="card" key={imovel.id ?? imovel.externalId ?? i}>
+              {imovel.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className="card-img"
+                  src={imovel.image}
+                  alt={`${imovel.type ?? "Imóvel"} em ${imovel.neighborhood ?? ""}`}
+                  loading="lazy"
+                />
+              ) : (
+                <div className="card-img card-img--empty">sem foto</div>
+              )}
               <h3>
                 {imovel.type ?? "Imóvel"} · {imovel.neighborhood ?? "—"}
               </h3>

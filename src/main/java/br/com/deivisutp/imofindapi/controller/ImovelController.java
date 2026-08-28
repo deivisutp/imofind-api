@@ -56,4 +56,10 @@ public class ImovelController {
             @RequestParam(required = false) String type) {
         return ResponseEntity.ok(imovelService.getNeighborhoodAggregates(city, type));
     }
+
+    @Operation(summary = "Fontes disponiveis")
+    @GetMapping("/fontes")
+    public ResponseEntity<List<String>> fontes() {
+        return ResponseEntity.ok(imovelService.getSources());
+    }
 }

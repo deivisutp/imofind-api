@@ -82,6 +82,24 @@ h2 {
   margin: 0.25rem 0;
 }
 
+.card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  background: #f1f5f9;
+  display: block;
+}
+
+.card-img--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
 .button {
   display: inline-block;
   background: #2563eb;

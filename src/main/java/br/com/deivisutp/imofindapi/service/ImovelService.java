@@ -155,6 +155,10 @@ public class ImovelService {
         return imovelRepository.aggregateByNeighborhood(emptyToNull(city), emptyToNull(type));
     }
 
+    public List<String> getSources() {
+        return imovelRepository.findDistinctSources();
+    }
+
     private static String emptyToNull(String value) {
         return (value == null || value.isBlank()) ? null : value;
     }

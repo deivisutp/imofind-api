@@ -38,5 +38,8 @@ public interface ImovelRepository extends JpaRepository<Imovel, Long> {
             ORDER BY COUNT(*) DESC
             """, nativeQuery = true)
     List<NeighborhoodAggregate> aggregateByNeighborhood(@Param("city") String city, @Param("type") String type);
+
+    @Query("SELECT DISTINCT im.origem FROM Imovel im WHERE im.active = true AND im.origem IS NOT NULL ORDER BY im.origem")
+    List<String> findDistinctSources();
 }
 
