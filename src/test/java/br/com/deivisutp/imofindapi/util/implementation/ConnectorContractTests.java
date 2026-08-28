@@ -100,6 +100,62 @@ class ConnectorContractTests {
         assertThat(dto.getExtra()).isEqualTo("1 quarto, 1 vaga, 53m²");
     }
 
+    @Test
+    void bluExtractsOnlyVisibleSaleFromConsultJson() throws IOException {
+        List<ImovelDTO> list = new BluImoveisScrapping(null).parseListings(loadString("fixtures/blu-list.json"));
+
+        // fixture tem 1 venda visivel + 1 com preco oculto (flgHideValSaleSite=1): so a visivel entra
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("1780000"));
+        assertThat(dto.getOrigem()).isEqualTo("BLU-IMOVEIS");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Velha");
+        assertThat(dto.getType()).isEqualTo("Casas");
+        assertThat(dto.getArea()).isEqualByComparingTo(new BigDecimal("320"));
+        assertThat(dto.getLink()).isEqualTo("https://www.blumenauimoveis.com.br/imovel/5256");
+        assertThat(dto.getImage())
+                .isEqualTo("https://s3.amazonaws.com/msys-imob-blumenauimoveis/imovel/fotos/5256/b66fe5b86d4dc09ba916b29150ec3852.jpg");
+        assertThat(dto.getExtra()).isEqualTo("5 quartos, 4 vagas, 320m2");
+    }
+
+    @Test
+    void jacintoExtractsBlumenauSaleFromFrozenHtml() throws IOException {
+        List<ImovelDTO> list = new JacintoScrapping(null).extract(load("fixtures/jacinto-list.html"));
+
+        // fixture tem 1 Blumenau + 1 Gaspar: so o de Blumenau entra (recorte do piloto)
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("6000000.00"));
+        assertThat(dto.getOrigem()).isEqualTo("JACINTO");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Itoupava Central");
+        assertThat(dto.getType()).isEqualTo("Lote Terreno");
+        assertThat(dto.getArea()).isEqualByComparingTo(new BigDecimal("7537"));
+        assertThat(dto.getLink())
+                .isEqualTo("https://jacintoimoveis.com.br/imovel/4156/comprar/lote-terreno/blumenau/itoupava-central");
+        assertThat(dto.getImage())
+                .isEqualTo("https://sistema.imogestao.com.br/fotos/320/510991/20260731-0639-6a6c6d3eacb68a.jpg");
+    }
+
+    @Test
+    void abelardoExtractsBlumenauSaleFromFrozenHtml() throws IOException {
+        List<ImovelDTO> list = new AbelardoScrapping(null).extract(load("fixtures/abelardo-list.html"));
+
+        // fixture tem 1 Blumenau + 1 Gaspar: so o de Blumenau entra
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("450000.00"));
+        assertThat(dto.getOrigem()).isEqualTo("ABELARDO");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Velha");
+        assertThat(dto.getType()).isEqualTo("Apartamento");
+        assertThat(dto.getLink())
+                .isEqualTo("https://www.abelardoimoveis.com.br/imovel/8400/comprar/apartamento/blumenau/velha");
+        assertThat(dto.getImage())
+                .isEqualTo("https://sistema.imogestao.com.br/fotos/365/440000/foto-velha.jpg");
+    }
+
     private Document load(String resource) throws IOException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
             if (in == null) {

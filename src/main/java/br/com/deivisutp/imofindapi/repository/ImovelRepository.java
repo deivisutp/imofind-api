@@ -41,5 +41,8 @@ public interface ImovelRepository extends JpaRepository<Imovel, Long> {
 
     @Query("SELECT DISTINCT im.origem FROM Imovel im WHERE im.active = true AND im.origem IS NOT NULL ORDER BY im.origem")
     List<String> findDistinctSources();
+
+    @Query("SELECT DISTINCT im.type FROM Imovel im WHERE im.active = true AND im.type IS NOT NULL AND im.type <> '' ORDER BY im.type")
+    List<String> findDistinctTypes();
 }
 

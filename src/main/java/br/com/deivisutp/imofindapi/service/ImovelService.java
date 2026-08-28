@@ -159,6 +159,10 @@ public class ImovelService {
         return imovelRepository.findDistinctSources();
     }
 
+    public List<String> getTypes() {
+        return imovelRepository.findDistinctTypes();
+    }
+
     private static String emptyToNull(String value) {
         return (value == null || value.isBlank()) ? null : value;
     }

@@ -62,4 +62,10 @@ public class ImovelController {
     public ResponseEntity<List<String>> fontes() {
         return ResponseEntity.ok(imovelService.getSources());
     }
+
+    @Operation(summary = "Tipos disponiveis")
+    @GetMapping("/tipos")
+    public ResponseEntity<List<String>> tipos() {
+        return ResponseEntity.ok(imovelService.getTypes());
+    }
 }

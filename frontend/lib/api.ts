@@ -55,6 +55,14 @@ export async function fetchFontes(): Promise<string[]> {
   return res.json();
 }
 
+export async function fetchTipos(): Promise<string[]> {
+  const res = await fetch(`${API_URL}/api/v1/imoveis/tipos`);
+  if (!res.ok) {
+    throw new Error(`Falha ao buscar tipos: ${res.status}`);
+  }
+  return res.json();
+}
+
 export function formatPrice(imovel: Imovel): string {
   if (imovel.price_varchar) {
     return imovel.price_varchar;

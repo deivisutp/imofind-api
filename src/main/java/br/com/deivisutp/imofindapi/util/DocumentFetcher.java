@@ -10,4 +10,7 @@ public interface DocumentFetcher {
 
     /** Corpo bruto de um recurso não-HTML (ex.: endpoint JSON/JS), com a mesma política de coleta. */
     String getText(String url) throws IOException;
+
+    /** POST com corpo JSON; retorna o corpo bruto da resposta (ex.: APIs de busca). */
+    String postJson(String url, String jsonBody) throws IOException;
 }
