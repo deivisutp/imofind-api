@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { fetchImoveis, fetchFontes, formatPrice, type Imovel } from "@/lib/api";
+import { fetchImoveis, fetchFontes, fetchTipos, formatPrice, type Imovel } from "@/lib/api";
 
 export default function ImoveisPage() {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
@@ -13,6 +13,8 @@ export default function ImoveisPage() {
   const [neighborhood, setNeighborhood] = useState("");
   const [origem, setOrigem] = useState("");
   const [fontes, setFontes] = useState<string[]>([]);
+  const [tipo, setTipo] = useState("");
+  const [tipos, setTipos] = useState<string[]>([]);
 
   async function load() {
     setLoading(true);
@@ -22,6 +24,7 @@ export default function ImoveisPage() {
         city: city || undefined,
         neighborhood: neighborhood || undefined,
         origem: origem || undefined,
+        type: tipo || undefined,
         page: 1,
         size: 30,
       });
@@ -38,6 +41,9 @@ export default function ImoveisPage() {
     fetchFontes()
       .then(setFontes)
       .catch(() => setFontes([]));
+    fetchTipos()
+      .then(setTipos)
+      .catch(() => setTipos([]));
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -72,6 +78,14 @@ export default function ImoveisPage() {
           {fontes.map((f) => (
             <option key={f} value={f}>
               {f}
+            </option>
+          ))}
+        </select>
+        <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
+          <option value="">Todos os tipos</option>
+          {tipos.map((t) => (
+            <option key={t} value={t}>
+              {t}
             </option>
           ))}
         </select>

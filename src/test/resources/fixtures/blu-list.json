@@ -1,0 +1,39 @@
+{
+  "response": {
+    "numFound": 2,
+    "docs": [
+      {
+        "idtProperty": 5256,
+        "jsonPhotos": "[{\"desPhoto\":\"Foto\",\"urlPhoto\":\"https://s3.amazonaws.com/msys-imob-blumenauimoveis/imovel/fotos/5256/b66fe5b86d4dc09ba916b29150ec3852.jpg\",\"flgNotShowSite\":0},{\"desPhoto\":\"Foto\",\"urlPhoto\":\"https://s3.amazonaws.com/msys-imob-blumenauimoveis/imovel/fotos/5256/e372cc95cfeff16dd639bf88defbc518.jpg\",\"flgNotShowSite\":0}]",
+        "namDistrict": "Velha",
+        "namCity": "Blumenau",
+        "namState": "Santa Catarina",
+        "namCategory": "Casas",
+        "namSubCategory": "Alto Padrão",
+        "prop_char_1": 320,
+        "prop_char_2": 380,
+        "valSales": 1780000,
+        "totalRooms": 5,
+        "totalGarages": 4,
+        "indType": "S",
+        "flgHideValSaleSite": 0,
+        "desTitleSite": "Casa 4 dormitórios e com piscina bairro de Velha"
+      },
+      {
+        "idtProperty": 9999,
+        "jsonPhotos": "[]",
+        "namDistrict": "Centro",
+        "namCity": "Blumenau",
+        "namCategory": "Apartamentos",
+        "prop_char_1": 60,
+        "valSales": 0,
+        "totalRooms": 2,
+        "totalGarages": 1,
+        "indType": "S",
+        "flgHideValSaleSite": 1,
+        "desTitleSite": "Apartamento com valor sob consulta"
+      }
+    ],
+    "error": null
+  }
+}

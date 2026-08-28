@@ -3,6 +3,7 @@ package br.com.deivisutp.imofindapi.controller;
 import br.com.deivisutp.imofindapi.dto.ImovelFilterDTO;
 import br.com.deivisutp.imofindapi.dto.ImovelResponseDTO;
 import br.com.deivisutp.imofindapi.dto.NeighborhoodAggregate;
+import br.com.deivisutp.imofindapi.dto.VariacoesResponseDTO;
 import br.com.deivisutp.imofindapi.entities.Imovel;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
 import br.com.deivisutp.imofindapi.service.ImovelService;
@@ -61,5 +62,17 @@ public class ImovelController {
     @GetMapping("/fontes")
     public ResponseEntity<List<String>> fontes() {
         return ResponseEntity.ok(imovelService.getSources());
+    }
+
+    @Operation(summary = "Tipos disponiveis")
+    @GetMapping("/tipos")
+    public ResponseEntity<List<String>> tipos() {
+        return ResponseEntity.ok(imovelService.getTypes());
+    }
+
+    @Operation(summary = "Variacoes recentes (novos, reducoes, removidos)")
+    @GetMapping("/variacoes")
+    public ResponseEntity<VariacoesResponseDTO> variacoes(@RequestParam(defaultValue = "7") int dias) {
+        return ResponseEntity.ok(imovelService.getVariacoes(dias));
     }
 }

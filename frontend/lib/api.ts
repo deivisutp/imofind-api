@@ -55,6 +55,45 @@ export async function fetchFontes(): Promise<string[]> {
   return res.json();
 }
 
+export async function fetchTipos(): Promise<string[]> {
+  const res = await fetch(`${API_URL}/api/v1/imoveis/tipos`);
+  if (!res.ok) {
+    throw new Error(`Falha ao buscar tipos: ${res.status}`);
+  }
+  return res.json();
+}
+
+export interface VariacaoResumo {
+  novos: number;
+  reducoes: number;
+  aumentos: number;
+  removidos: number;
+  reativados: number;
+}
+
+export interface ReducaoPreco {
+  titulo: string | null;
+  neighborhood: string | null;
+  city: string | null;
+  link: string | null;
+  origem: string | null;
+  oldPrice: number | null;
+  newPrice: number | null;
+}
+
+export interface VariacoesResponse {
+  resumo: VariacaoResumo;
+  reducoes: ReducaoPreco[];
+}
+
+export async function fetchVariacoes(dias = 7): Promise<VariacoesResponse> {
+  const res = await fetch(`${API_URL}/api/v1/imoveis/variacoes?dias=${dias}`);
+  if (!res.ok) {
+    throw new Error(`Falha ao buscar variacoes: ${res.status}`);
+  }
+  return res.json();
+}
+
 export function formatPrice(imovel: Imovel): string {
   if (imovel.price_varchar) {
     return imovel.price_varchar;

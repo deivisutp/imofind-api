@@ -3,9 +3,11 @@ package br.com.deivisutp.imofindapi.service;
 import br.com.deivisutp.imofindapi.dto.ImovelDTO;
 import br.com.deivisutp.imofindapi.dto.ImovelFilterDTO;
 import br.com.deivisutp.imofindapi.dto.NeighborhoodAggregate;
+import br.com.deivisutp.imofindapi.dto.VariacoesResponseDTO;
 import br.com.deivisutp.imofindapi.entities.Imovel;
 import br.com.deivisutp.imofindapi.exception.NotFoundException;
 import br.com.deivisutp.imofindapi.repository.ImovelRepository;
+import br.com.deivisutp.imofindapi.repository.ListingEventRepository;
 import br.com.deivisutp.imofindapi.repository.filter.ImovelFilter;
 import br.com.deivisutp.imofindapi.repository.implementation.ImovelRepositoryImpl;
 import br.com.deivisutp.imofindapi.util.DataUtil;
@@ -33,6 +35,9 @@ public class ImovelService {
 
     @Autowired
     private ImovelRepositoryImpl imovelRepo;
+
+    @Autowired
+    private ListingEventRepository listingEventRepository;
 
     @Autowired
     private ListingIngestService listingIngestService;
@@ -157,6 +162,16 @@ public class ImovelService {
 
     public List<String> getSources() {
         return imovelRepository.findDistinctSources();
+    }
+
+    public List<String> getTypes() {
+        return imovelRepository.findDistinctTypes();
+    }
+
+    public VariacoesResponseDTO getVariacoes(int dias) {
+        return new VariacoesResponseDTO(
+                listingEventRepository.resumoVariacoes(dias),
+                listingEventRepository.reducoesRecentes(dias));
     }
 
     private static String emptyToNull(String value) {
