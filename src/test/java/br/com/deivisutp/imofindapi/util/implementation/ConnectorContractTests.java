@@ -80,6 +80,26 @@ class ConnectorContractTests {
         assertThat(dto.getExtra()).isEqualTo("2 quartos, 2 banheiros, 1 vaga, 94.81m2");
     }
 
+    @Test
+    void torresulExtractsSaleListingFromFrozenHtml() throws IOException {
+        List<ImovelDTO> list = new TorresulScrapping(null).extract(load("fixtures/torresul-list.html"));
+
+        // fixture tem 1 venda com preco + 1 "Sob consulta" (sem preco): so a com preco entra
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("280000.00"));
+        assertThat(dto.getOrigem()).isEqualTo("TORRESUL");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Garcia");
+        assertThat(dto.getType()).isEqualTo("Apartamento");
+        assertThat(dto.getArea()).isEqualByComparingTo(new BigDecimal("53"));
+        assertThat(dto.getLink())
+                .isEqualTo("https://torresulimobiliaria.com.br/imovel/17971/apartamento-1-quarto-garcia-blumenau/");
+        assertThat(dto.getImage())
+                .isEqualTo("https://rocketstatic2.com.br/media/torresulimobiliaria/imo-fotos/17971/2d195c18e0469ea7.jpg.webp?v=9855");
+        assertThat(dto.getExtra()).isEqualTo("1 quarto, 1 vaga, 53m²");
+    }
+
     private Document load(String resource) throws IOException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
             if (in == null) {
