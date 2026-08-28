@@ -15,6 +15,9 @@ export default function HomePage() {
           <Link className="button" href="/indicadores">
             Ver indicadores por bairro
           </Link>
+          <Link className="button secondary" href="/variacoes">
+            Variações da semana
+          </Link>
           <Link className="button secondary" href="/imoveis">
             Ver ofertas coletadas
           </Link>
