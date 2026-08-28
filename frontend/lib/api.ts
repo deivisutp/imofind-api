@@ -24,6 +24,7 @@ export interface ImovelFilters {
   city?: string;
   neighborhood?: string;
   type?: string;
+  origem?: string;
   page?: number;
   size?: number;
 }
@@ -35,12 +36,21 @@ export async function fetchImoveis(filters: ImovelFilters = {}): Promise<ImovelR
   if (filters.city) params.set("city", filters.city);
   if (filters.neighborhood) params.set("neighborhood", filters.neighborhood);
   if (filters.type) params.set("type", filters.type);
+  if (filters.origem) params.set("origem", filters.origem);
   params.set("page", String(filters.page ?? 1));
   params.set("size", String(filters.size ?? 20));
 
   const res = await fetch(`${API_URL}/api/v1/imoveis/buscar?${params.toString()}`);
   if (!res.ok) {
     throw new Error(`Falha ao buscar imoveis: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function fetchFontes(): Promise<string[]> {
+  const res = await fetch(`${API_URL}/api/v1/imoveis/fontes`);
+  if (!res.ok) {
+    throw new Error(`Falha ao buscar fontes: ${res.status}`);
   }
   return res.json();
 }

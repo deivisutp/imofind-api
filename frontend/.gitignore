@@ -8,3 +8,4 @@
 .env
 .wrangler/
 .dev.vars
+.env.example
