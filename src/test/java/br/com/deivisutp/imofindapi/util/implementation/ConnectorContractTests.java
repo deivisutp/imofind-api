@@ -156,6 +156,61 @@ class ConnectorContractTests {
                 .isEqualTo("https://sistema.imogestao.com.br/fotos/365/440000/foto-velha.jpg");
     }
 
+    @Test
+    void allesExtractsBlumenauSaleFromFrozenHtml() throws IOException {
+        List<ImovelDTO> list = new AllesScrapping(null).extract(load("fixtures/alles-list.html"));
+
+        // fixture tem 1 Blumenau + 1 Balneário Camboriú: só o de Blumenau entra (recorte do piloto)
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("1400000"));
+        assertThat(dto.getOrigem()).isEqualTo("ALLES");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Victor Konder");
+        assertThat(dto.getType()).isEqualTo("Lote/Terreno");
+        assertThat(dto.getLink())
+                .isEqualTo("https://www.allesimoveis.com.br/imovel/loteterreno-para-venda-0-quartos-victor-konder-blumenau-sc-1376");
+        assertThat(dto.getImage())
+                .isEqualTo("https://sistema.imogestao.com.br/fotos/133/213421/609e598fbf19aa.jpg");
+    }
+
+    @Test
+    void barbieriExtractsBlumenauSaleFromFrozenHtml() throws IOException {
+        List<ImovelDTO> list = new BarbieriScrapping(null).extract(load("fixtures/barbieri-list.html"));
+
+        // fixture tem 1 Blumenau + 1 Porto Belo: só o de Blumenau entra
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("399000.00"));
+        assertThat(dto.getOrigem()).isEqualTo("BARBIERI");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Água Verde");
+        assertThat(dto.getType()).isEqualTo("Apartamento");
+        assertThat(dto.getArea()).isEqualByComparingTo(new BigDecimal("58"));
+        assertThat(dto.getExtra()).isEqualTo("2 quartos, 58m²");
+        assertThat(dto.getLink())
+                .isEqualTo("https://www.barbieriimobiliaria.com.br/imovel/apartamento-gua-verde-blumenau-sc/6654");
+        assertThat(dto.getImage())
+                .isEqualTo("https://barbieriimobiliaria.com.br/upl/arquivos/1006194_grande.jpg");
+    }
+
+    @Test
+    void raymundiExtractsBlumenauSaleFromFrozenHtml() throws IOException {
+        List<ImovelDTO> list = new RaymundiScrapping(null).extract(load("fixtures/raymundi-list.html"));
+
+        // fixture tem 1 Venda + 1 Locação: só a venda entra (city fixo Blumenau via rota filtrada)
+        assertThat(list).hasSize(1);
+        ImovelDTO dto = list.get(0);
+        assertThat(dto.getPrice()).isEqualByComparingTo(new BigDecimal("780000.00"));
+        assertThat(dto.getOrigem()).isEqualTo("RAYMUNDI");
+        assertThat(dto.getCity()).isEqualTo("Blumenau");
+        assertThat(dto.getNeighborhood()).isEqualTo("Vila Formosa");
+        assertThat(dto.getType()).isEqualTo("Apartamento");
+        assertThat(dto.getLink()).isEqualTo("https://www.raymundi.com.br/imovel?referencia=90");
+        assertThat(dto.getImage())
+                .isEqualTo("https://sistema.imogestao.com.br/fotos/377/93796/20260518-1051-6a0b1960194ada.jpg");
+    }
+
     private Document load(String resource) throws IOException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(resource)) {
             if (in == null) {
