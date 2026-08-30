@@ -70,6 +70,12 @@ public class ImovelController {
         return ResponseEntity.ok(imovelService.getTypes());
     }
 
+    @Operation(summary = "Cidades disponiveis")
+    @GetMapping("/cidades")
+    public ResponseEntity<List<String>> cidades() {
+        return ResponseEntity.ok(imovelService.getCities());
+    }
+
     @Operation(summary = "Variacoes recentes (novos, reducoes, removidos)")
     @GetMapping("/variacoes")
     public ResponseEntity<VariacoesResponseDTO> variacoes(@RequestParam(defaultValue = "7") int dias) {

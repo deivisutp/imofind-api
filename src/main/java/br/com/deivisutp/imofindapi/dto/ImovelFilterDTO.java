@@ -23,6 +23,7 @@ public class ImovelFilterDTO {
     private String city;
     private String neighborhood;
     private String type;
+    private String sort;
     private Integer page;
     private Integer size;
 }

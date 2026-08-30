@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
@@ -49,11 +50,22 @@ public class ImovelRepositoryImpl {
 
         TypedQuery<Imovel> typedQuery = entityManager.createQuery(
                 criteriaQuery.select(root)
-                        .where(predicateList.toArray(
-                                new Predicate[0])));
+                        .where(predicateList.toArray(new Predicate[0]))
+                        .orderBy(orderBy(criteriaBuilder, root, filter.getSort())));
 
         List<Imovel> results = pagination(typedQuery, filter.getPage(), filter.getSize(), totalElements);
         return results;
+    }
+
+    private List<Order> orderBy(CriteriaBuilder cb, Root<Imovel> root, String sort) {
+        // ordem padrao estavel (tie-break por id) garante paginacao consistente entre paginas
+        if ("price_asc".equalsIgnoreCase(sort)) {
+            return List.of(cb.asc(root.get("price")), cb.desc(root.get("id")));
+        }
+        if ("price_desc".equalsIgnoreCase(sort)) {
+            return List.of(cb.desc(root.get("price")), cb.desc(root.get("id")));
+        }
+        return List.of(cb.desc(root.get("firstSeenAt")), cb.desc(root.get("id")));
     }
 
     private List<Predicate> prepareSql(CriteriaBuilder criteriaBuilder,

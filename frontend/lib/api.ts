@@ -25,6 +25,9 @@ export interface ImovelFilters {
   neighborhood?: string;
   type?: string;
   origem?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: string;
   page?: number;
   size?: number;
 }
@@ -37,6 +40,13 @@ export async function fetchImoveis(filters: ImovelFilters = {}): Promise<ImovelR
   if (filters.neighborhood) params.set("neighborhood", filters.neighborhood);
   if (filters.type) params.set("type", filters.type);
   if (filters.origem) params.set("origem", filters.origem);
+  // O backend so aplica endPrice quando initialPrice existe; garante initialPrice=0 se so o maximo vier.
+  if (filters.minPrice != null) params.set("initialPrice", String(filters.minPrice));
+  if (filters.maxPrice != null) {
+    if (filters.minPrice == null) params.set("initialPrice", "0");
+    params.set("endPrice", String(filters.maxPrice));
+  }
+  if (filters.sort) params.set("sort", filters.sort);
   params.set("page", String(filters.page ?? 1));
   params.set("size", String(filters.size ?? 20));
 
@@ -59,6 +69,14 @@ export async function fetchTipos(): Promise<string[]> {
   const res = await fetch(`${API_URL}/api/v1/imoveis/tipos`);
   if (!res.ok) {
     throw new Error(`Falha ao buscar tipos: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function fetchCidades(): Promise<string[]> {
+  const res = await fetch(`${API_URL}/api/v1/imoveis/cidades`);
+  if (!res.ok) {
+    throw new Error(`Falha ao buscar cidades: ${res.status}`);
   }
   return res.json();
 }

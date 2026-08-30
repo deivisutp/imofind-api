@@ -119,11 +119,35 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
-.filters input {
+.filters input,
+.filters select {
   padding: 0.5rem 0.75rem;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 0.9rem;
+  background: #fff;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.pagesize {
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #dc2626;
 }
 
 .footer {
