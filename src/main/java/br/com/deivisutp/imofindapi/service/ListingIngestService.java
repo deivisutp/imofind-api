@@ -15,7 +15,7 @@ import br.com.deivisutp.imofindapi.repository.SourceListingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-
+import br.com.deivisutp.imofindapi.util.PropertyTypeNormalizer;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -190,7 +190,7 @@ public class ListingIngestService {
         imovel.setImage(dto.getImage());
         imovel.setCity(dto.getCity());
         imovel.setNeighborhood(dto.getNeighborhood());
-        imovel.setType(dto.getType());
+        imovel.setType(PropertyTypeNormalizer.normalize(dto.getType()));
         imovel.setArea(dto.getArea());
         imovel.setActive(active);
         if (imovel.getFirstSeenAt() == null) {
