@@ -12,4 +12,7 @@ public final class ScrappingList {
     public static final String BLU_IMOVEIS = "BLU-IMOVEIS";
     public static final String JACINTO = "JACINTO";
     public static final String ABELARDO = "ABELARDO";
+    public static final String ALLES = "ALLES";
+    public static final String BARBIERI = "BARBIERI";
+    public static final String RAYMUNDI = "RAYMUNDI";
 }
