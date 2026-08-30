@@ -168,6 +168,10 @@ public class ImovelService {
         return imovelRepository.findDistinctTypes();
     }
 
+    public List<String> getCities() {
+        return imovelRepository.findDistinctCities();
+    }
+
     public VariacoesResponseDTO getVariacoes(int dias) {
         return new VariacoesResponseDTO(
                 listingEventRepository.resumoVariacoes(dias),
