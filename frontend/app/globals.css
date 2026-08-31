@@ -196,3 +196,22 @@ h2 {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+
+.table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.table th.sortable:hover {
+  color: #0f172a;
+}
+
+.sort-ind {
+  color: #2563eb;
+  margin-left: 0.25rem;
+}
+
+.col-highlight {
+  background: #f0f9ff;
+}

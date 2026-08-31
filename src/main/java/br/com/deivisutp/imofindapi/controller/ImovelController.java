@@ -78,7 +78,9 @@ public class ImovelController {
 
     @Operation(summary = "Variacoes recentes (novos, reducoes, removidos)")
     @GetMapping("/variacoes")
-    public ResponseEntity<VariacoesResponseDTO> variacoes(@RequestParam(defaultValue = "7") int dias) {
-        return ResponseEntity.ok(imovelService.getVariacoes(dias));
+    public ResponseEntity<VariacoesResponseDTO> variacoes(
+            @RequestParam(defaultValue = "7") int dias,
+            @RequestParam(defaultValue = "50") int limite) {
+        return ResponseEntity.ok(imovelService.getVariacoes(dias, limite));
     }
 }

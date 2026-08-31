@@ -104,8 +104,8 @@ export interface VariacoesResponse {
   reducoes: ReducaoPreco[];
 }
 
-export async function fetchVariacoes(dias = 7): Promise<VariacoesResponse> {
-  const res = await fetch(`${API_URL}/api/v1/imoveis/variacoes?dias=${dias}`);
+export async function fetchVariacoes(dias = 7, limite = 50): Promise<VariacoesResponse> {
+  const res = await fetch(`${API_URL}/api/v1/imoveis/variacoes?dias=${dias}&limite=${limite}`);
   if (!res.ok) {
     throw new Error(`Falha ao buscar variacoes: ${res.status}`);
   }
