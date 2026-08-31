@@ -35,7 +35,7 @@ public interface ListingEventRepository extends JpaRepository<ListingEvent, Long
             WHERE e.event_type = 'PRICE_CHANGED' AND e.new_price < e.old_price
               AND e.occurred_at >= now() - (:dias * interval '1 day')
             ORDER BY (e.old_price - e.new_price) DESC
-            LIMIT 20
+            LIMIT :limite
             """, nativeQuery = true)
-    List<ReducaoPreco> reducoesRecentes(@Param("dias") int dias);
+    List<ReducaoPreco> reducoesRecentes(@Param("dias") int dias, @Param("limite") int limite);
 }

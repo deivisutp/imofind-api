@@ -172,10 +172,11 @@ public class ImovelService {
         return imovelRepository.findDistinctCities();
     }
 
-    public VariacoesResponseDTO getVariacoes(int dias) {
+    public VariacoesResponseDTO getVariacoes(int dias, int limite) {
+        int capped = Math.min(Math.max(limite, 1), 200); // teto evita LIMIT abusivo vindo do cliente
         return new VariacoesResponseDTO(
                 listingEventRepository.resumoVariacoes(dias),
-                listingEventRepository.reducoesRecentes(dias));
+                listingEventRepository.reducoesRecentes(dias, capped));
     }
 
     private static String emptyToNull(String value) {
